@@ -1,6 +1,7 @@
 package cn.hush.Coupra.framework.config;
 
 
+import cn.hush.Coupra.framework.web.GlobalExceptionHandler;
 import org.springframework.context.annotation.Bean;
 
 /**
