@@ -22,21 +22,15 @@
         <module>gateway</module>
     </modules>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
-    </parent>
 
     <properties>
         <java.version>17</java.version>
         <spring-boot.version>3.0.7</spring-boot.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
-        <mybatis-spring-boot-starter.version>3.0.2</mybatis-spring-boot-starter.version>
+        <mybatis-flex.version>1.11.0</mybatis-flex.version>
         <shardingsphere.version>5.3.2</shardingsphere.version>
         <fastjson2.version>2.0.36</fastjson2.version>
-        <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <dozer-core.version>6.5.2</dozer-core.version>
         <hutool-all.version>5.8.27</hutool-all.version>
         <redisson.version>3.27.2</redisson.version>
@@ -50,7 +44,7 @@
         <xxl-job.version>2.4.1</xxl-job.version>
         <rocketmq-spring-boot-starter.version>2.3.0</rocketmq-spring-boot-starter.version>
         <spotless-maven-plugin.version>2.22.1</spotless-maven-plugin.version>
-        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <elasticsearch-spring-boot-starter.version>2.6.12</elasticsearch-spring-boot-starter.version>
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
     </properties>
@@ -73,6 +67,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+                <version>${mybatis-flex.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
@@ -86,12 +86,6 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
             </dependency>
 
             <dependency>
@@ -201,17 +195,17 @@
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless-maven-plugin.version}</version>
-                <configuration>
+<!--                <configuration>
                     <java>
-                        <!--<eclipse>
+                        &lt;!&ndash;<eclipse>
                             <file>${maven.multiModuleProjectDirectory}/format/one-coupon_spotless_formatter.xml</file>
-                        </eclipse>-->
-                        <licenseHeader>
-                            <!-- ${maven.multiModuleProjectDirectory} 爆红属于正常，并不影响编译或者运行，忽略就好 -->
+                        </eclipse>&ndash;&gt;
+&lt;!&ndash;                        <licenseHeader>
+                            &lt;!&ndash; ${maven.multiModuleProjectDirectory} 爆红属于正常，并不影响编译或者运行，忽略就好 &ndash;&gt;
                             <file>${maven.multiModuleProjectDirectory}/copyright/copyright.txt</file>
-                        </licenseHeader>
+                        </licenseHeader>&ndash;&gt;
                     </java>
-                </configuration>
+                </configuration>-->
                 <executions>
                     <execution>
                         <goals>
