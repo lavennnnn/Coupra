@@ -14,7 +14,6 @@
         <module>project</module>
         <module>distribution</module>
         <module>engine</module>
-        <module>format</module>
         <module>framework</module>
         <module>merchant-admin</module>
         <module>search</module>
