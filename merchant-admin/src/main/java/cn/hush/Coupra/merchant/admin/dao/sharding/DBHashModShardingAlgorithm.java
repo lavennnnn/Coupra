@@ -1,5 +1,6 @@
 package cn.hush.Coupra.merchant.admin.dao.sharding;
 
+import lombok.Getter;
 import org.apache.shardingsphere.infra.util.exception.ShardingSpherePreconditions;
 import org.apache.shardingsphere.sharding.api.sharding.standard.PreciseShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.RangeShardingValue;
@@ -18,11 +19,12 @@ public final class DBHashModShardingAlgorithm implements StandardShardingAlgorit
 
     //私有成员变量
         //properties
+    @Getter
     private Properties props;
         //分库数量
     private int shardingCount;
 
-    private static final String SHARDING_COUNT_KEY = "sharding_count";
+    private static final String SHARDING_COUNT_KEY = "sharding-count";
 
     @Override
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> preciseShardingValue) {
