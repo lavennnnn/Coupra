@@ -21,15 +21,15 @@ public final class DBHashModShardingAlgorithm implements StandardShardingAlgorit
         //properties
     @Getter
     private Properties props;
-        //分库数量
+        //分片数量
     private int shardingCount;
 
     private static final String SHARDING_COUNT_KEY = "sharding-count";
 
     @Override
-    public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> preciseShardingValue) {
+    public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
         // 分片键值，也就是商家店铺编号
-        Long id = preciseShardingValue.getValue();
+        Long id = shardingValue.getValue();
         // 一共有多少个真实的数据库，咱们就两个 ds_0、ds_1
         int dbSize = availableTargetNames.size();
         // 取模
