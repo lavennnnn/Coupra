@@ -57,7 +57,7 @@ public class UserConfiguration implements WebMvcConfigurer {
 
         @Override
         public void afterCompletion(@Nullable HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler, Exception exception) throws Exception {
-            UserContext.removerUser();
+            UserContext.removeUser();
         }
     }
 
