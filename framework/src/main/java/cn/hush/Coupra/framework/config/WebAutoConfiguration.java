@@ -3,6 +3,7 @@ package cn.hush.Coupra.framework.config;
 
 import cn.hush.Coupra.framework.web.GlobalExceptionHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @program: Coupra
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Bean;
  * @author: Hush
  * @create: 2025-06-27 00:35
  **/
-
 public class WebAutoConfiguration {
 
     @Bean

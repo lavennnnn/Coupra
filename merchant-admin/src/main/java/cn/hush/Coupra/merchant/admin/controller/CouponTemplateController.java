@@ -1,6 +1,7 @@
 package cn.hush.Coupra.merchant.admin.controller;
 
 
+import cn.hush.Coupra.framework.idempotent.NoDuplicateSubmit;
 import cn.hush.Coupra.framework.result.Result;
 
 import cn.hush.Coupra.framework.web.Results;
@@ -28,6 +29,7 @@ public class CouponTemplateController {
 
     private final CouponTemplateService couponTemplateService;
 
+    @NoDuplicateSubmit
     @Operation(summary = "商家创建优惠券模板")
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public Result<Void> createCouponTemplate(@RequestBody CouponTemplateSaveReqDTO requestParam) {

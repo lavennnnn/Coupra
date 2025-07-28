@@ -3,6 +3,8 @@ package cn.hush.Coupra.merchant.admin.dao.entity;
 
 
 import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +29,7 @@ public class CouponTemplateDO {
     /**
      * id
      */
+    @Id(keyType = KeyType.Auto)
     private Long id;
 
     /**

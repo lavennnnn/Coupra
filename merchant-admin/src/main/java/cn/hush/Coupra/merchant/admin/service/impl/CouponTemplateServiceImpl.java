@@ -61,6 +61,12 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     )
     @Override
     public void createCouponTemplate(CouponTemplateSaveReqDTO requestParam) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         // 通过责任链验证请求参数是否正确
         merchantAdminChainContext.handler(MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY.name(), requestParam);
         // 新增优惠券模板信息到数据库
