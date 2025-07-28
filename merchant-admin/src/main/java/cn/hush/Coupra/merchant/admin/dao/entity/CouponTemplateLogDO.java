@@ -1,0 +1,67 @@
+package cn.hush.Coupra.merchant.admin.dao.entity;
+
+
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+/**
+ * @program: Coupra
+ * @description: 优惠券模板操作日志数据库持久层实体
+ * @author: Hush
+ * @create: 2025-07-26 19:14
+ **/
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table("t_coupon_template_log")
+public class CouponTemplateLogDO {
+
+    /**
+     * id
+     */
+    private Long id;
+
+    /**
+     * 店铺编号
+     */
+    private Long shopNumber;
+
+    /**
+     * 优惠券模板ID
+     */
+    private String couponTemplateId;
+
+    /**
+     * 操作人
+     */
+    private String operatorId;
+
+    /**
+     * 操作日志
+     */
+    private String operationLog;
+
+    /**
+     * 原始数据
+     */
+    private String originalData;
+
+    /**
+     * 修改后数据
+     */
+    private String modifiedData;
+
+    /**
+     * 创建时间
+     */
+    @Column(onInsertValue = "now()")
+    private Date createTime;
+}

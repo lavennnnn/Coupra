@@ -62,7 +62,7 @@ public final class UserContext {
     /**
      * 清理用户上下文
      */
-    public static void removerUser() {
+    public static void removeUser() {
         USER_THREAD_LOCAL.remove();
     }
 }
