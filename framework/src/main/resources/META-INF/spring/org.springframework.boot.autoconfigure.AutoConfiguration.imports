@@ -1,1 +1,2 @@
 cn.hush.Coupra.framework.config.WebAutoConfiguration
+com.nageoffer.onecoupon.framework.config.IdempotentConfiguration
