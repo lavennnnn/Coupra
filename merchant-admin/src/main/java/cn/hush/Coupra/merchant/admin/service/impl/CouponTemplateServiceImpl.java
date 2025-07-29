@@ -6,11 +6,17 @@ import cn.hush.Coupra.merchant.admin.common.context.UserContext;
 import cn.hush.Coupra.merchant.admin.common.enums.CouponTemplateStatusEnum;
 import cn.hush.Coupra.merchant.admin.dao.entity.CouponTemplateDO;
 import cn.hush.Coupra.merchant.admin.dao.mapper.CouponTemplateMapper;
+import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplateNumberReqDTO;
+import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplatePageQueryReqDTO;
 import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
+import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplatePageQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.service.CouponTemplateService;
 import cn.hush.Coupra.merchant.admin.service.basics.chain.MerchantAdminChainContext;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import com.mybatisflex.core.query.QueryChain;
+import com.mybatisflex.core.service.IService;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.starter.annotation.LogRecord;
@@ -20,10 +26,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.hush.Coupra.merchant.admin.common.enums.ChainBizMarkNum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
@@ -126,6 +129,28 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
         } catch (Exception e) {
             log.error("[缓存预热] Redis 缓存设置失败！", e);
         }
+
+    }
+
+    @Override
+    public IService<CouponTemplatePageQueryRespDTO> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam) {
+        //构建分页查询模板
+
+
+    }
+
+    @Override
+    public CouponTemplateQueryRespDTO findCouponTemplateById(String couponTemplateId) {
+        return null;
+    }
+
+    @Override
+    public void increaseNumberCouponTemplate(CouponTemplateNumberReqDTO requestParam) {
+
+    }
+
+    @Override
+    public void terminateCouponTemplate(String couponTemplateId) {
 
     }
 
