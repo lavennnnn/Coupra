@@ -7,7 +7,10 @@ import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplatePageQueryReqDTO;
 import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
 import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplatePageQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
+
+import java.util.List;
 
 /**
  * @program: Coupra
@@ -31,7 +34,7 @@ public interface CouponTemplateService extends IService<CouponTemplateDO> {
      * @param requestParam 请求参数
      * @return 商家优惠券模板分页数据
      */
-    IService<CouponTemplatePageQueryRespDTO> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam);
+    Page<CouponTemplatePageQueryRespDTO> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam);
 
     /**
      * 查询优惠券模板详情

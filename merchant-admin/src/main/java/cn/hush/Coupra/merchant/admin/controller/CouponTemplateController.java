@@ -11,6 +11,7 @@ import cn.hush.Coupra.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
 import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplatePageQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.service.CouponTemplateService;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @program: Coupra
@@ -44,7 +47,7 @@ public class CouponTemplateController {
 
     @Operation(summary = "分页查询优惠券模板")
     @RequestMapping(value = "page", method = RequestMethod.GET)
-    public Result<IService<CouponTemplatePageQueryRespDTO>> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam) {
+    public Result<Page<CouponTemplatePageQueryRespDTO>> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam) {
         return Results.success(couponTemplateService.pageQueryCouponTemplate(requestParam));
     }
 

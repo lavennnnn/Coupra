@@ -1,6 +1,8 @@
 package cn.hush.Coupra.merchant.admin.service.impl;
 
 
+import cn.hush.Coupra.framework.exception.ClientException;
+import cn.hush.Coupra.framework.exception.ServiceException;
 import cn.hush.Coupra.merchant.admin.common.constant.MerchantAdminRedisConstant;
 import cn.hush.Coupra.merchant.admin.common.context.UserContext;
 import cn.hush.Coupra.merchant.admin.common.enums.CouponTemplateStatusEnum;
@@ -14,12 +16,15 @@ import cn.hush.Coupra.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
 import cn.hush.Coupra.merchant.admin.service.CouponTemplateService;
 import cn.hush.Coupra.merchant.admin.service.basics.chain.MerchantAdminChainContext;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.mybatisflex.core.query.QueryChain;
-import com.mybatisflex.core.service.IService;
+import com.alibaba.fastjson2.JSON;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.starter.annotation.LogRecord;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -133,10 +138,24 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     }
 
     @Override
-    public IService<CouponTemplatePageQueryRespDTO> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam) {
+    public Page<CouponTemplatePageQueryRespDTO> pageQueryCouponTemplate(CouponTemplatePageQueryReqDTO requestParam) {
         //构建分页查询模板
+        QueryWrapper wrapper = QueryWrapper.create()
+                .eq(CouponTemplateDO::getShopNumber, UserContext.getShopNumber())
+                .like(CouponTemplateDO::getName, requestParam.getName(), StrUtil.isNotBlank(requestParam.getName()))
+                .like(CouponTemplateDO::getGoods, requestParam.getGoods(), StrUtil.isNotBlank(requestParam.getGoods()))
+                .eq(CouponTemplateDO::getType, requestParam.getType(), Objects.nonNull(requestParam.getType()));
 
+        Page<CouponTemplateDO> pages = couponTemplateMapper.paginate(requestParam, wrapper);
 
+        List<CouponTemplatePageQueryRespDTO> list = pages.getRecords()
+                .stream()
+                .map(each -> BeanUtil.toBean(each, CouponTemplatePageQueryRespDTO.class))
+                .toList();
+
+        Page<CouponTemplatePageQueryRespDTO> finalPage = new Page<>();
+        finalPage.setRecords(list);
+        return finalPage;
     }
 
     @Override
@@ -144,13 +163,79 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
         return null;
     }
 
+    @LogRecord(
+            success = "增加发行量：{{#requestParam.number}}",
+            type = "CouponTemplate",
+            bizNo = "{{#requestParam.couponTemplateId}}"
+    )
     @Override
     public void increaseNumberCouponTemplate(CouponTemplateNumberReqDTO requestParam) {
 
+        // 验证是否存在数据横向越权
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .eq(CouponTemplateDO::getShopNumber, UserContext.getShopNumber())
+                .eq(CouponTemplateDO::getId, requestParam.getCouponTemplateId());
+        CouponTemplateDO couponTemplateDO = couponTemplateMapper.selectOneByQuery(queryWrapper);
+        if (couponTemplateDO == null) {
+            // 一旦查询优惠券不存在，基本可判定横向越权，可上报该异常行为，次数多了后执行封号等处理
+            throw new ClientException("优惠券模板异常，请检查操作是否正确...");
+        }
+
+        // 验证优惠券模板是否正常
+        if (ObjectUtil.notEqual(couponTemplateDO.getStatus(), CouponTemplateStatusEnum.ACTIVE.getStatus())) {
+            throw new ClientException("优惠券模板已结束");
+        }
+
+        // 记录优惠券模板修改前数据
+        LogRecordContext.putVariable("originalData", JSON.toJSONString(couponTemplateDO));
+
+        // 设置数据库优惠券模板增加库存发行量
+        int increased = couponTemplateMapper.increaseNumberCouponTemplate(UserContext.getShopNumber(), requestParam.getCouponTemplateId(), requestParam.getNumber());
+        if (increased <= 0) {
+            throw new ServiceException("优惠券模板增加发行量失败");
+        }
+
+        // 增加优惠券模板缓存库存发行量
+        String couponTemplateCacheKey = String.format(MerchantAdminRedisConstant.COUPON_TEMPLATE_KEY, requestParam.getCouponTemplateId());
+        stringRedisTemplate.opsForHash().increment(couponTemplateCacheKey, "stock", requestParam.getNumber());
+
     }
 
+    @LogRecord(
+            success = "结束优惠券",
+            type = "CouponTemplate",
+            bizNo = "{{#couponTemplateId}}"
+    )
     @Override
     public void terminateCouponTemplate(String couponTemplateId) {
+
+        //验证是否存在数据横向越权
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .eq(CouponTemplateDO::getShopNumber, UserContext.getShopNumber())
+                .eq(CouponTemplateDO::getId, couponTemplateId);
+
+        CouponTemplateDO couponTemplateDO = couponTemplateMapper.selectOneByQuery(queryWrapper);
+
+        if (couponTemplateDO == null) {
+            // 一旦查询优惠券不存在，基本可判定横向越权，可上报该异常行为，次数多了后执行封号等处理
+            throw new ClientException("优惠券模板异常，请检查操作是否正确...");
+        }
+
+        // 验证优惠券模板是否正常
+        if (ObjectUtil.notEqual(couponTemplateDO.getStatus(), CouponTemplateStatusEnum.ACTIVE.getStatus())) {
+            throw new ClientException("优惠券模板已结束");
+        }
+
+        // 修改优惠券模板为结束状态
+        CouponTemplateDO updateCouponTemplateDO = CouponTemplateDO.builder()
+                .status(CouponTemplateStatusEnum.ENDED.getStatus())
+                .build();
+
+        QueryWrapper updateWrapper = QueryWrapper.create()
+                .eq(CouponTemplateDO::getId, couponTemplateDO.getId())
+                .eq(CouponTemplateDO::getShopNumber, UserContext.getShopNumber());
+
+        couponTemplateMapper.updateByQuery(updateCouponTemplateDO, updateWrapper);
 
     }
 
