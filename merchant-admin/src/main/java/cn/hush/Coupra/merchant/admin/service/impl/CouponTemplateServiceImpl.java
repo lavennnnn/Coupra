@@ -19,15 +19,21 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.starter.annotation.LogRecord;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.MessageConst;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +57,9 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     private final MerchantAdminChainContext merchantAdminChainContext;
     private final StringRedisTemplate stringRedisTemplate;
 
+    private final RocketMQTemplate rocketMQTemplate;
+    private final ConfigurableEnvironment configurableEnvironment;
+
     @LogRecord(
             success = """
                     创建优惠券：{{#requestParam.name}}， \
@@ -69,11 +78,6 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     )
     @Override
     public void createCouponTemplate(CouponTemplateSaveReqDTO requestParam) {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         // 通过责任链验证请求参数是否正确
         merchantAdminChainContext.handler(MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY.name(), requestParam);
@@ -134,6 +138,38 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
         } catch (Exception e) {
             log.error("[缓存预热] Redis 缓存设置失败！", e);
         }
+
+        // 使用 RocketMQ5.x 发送任意时间延时消息
+        // 定义 Topic
+        String couponTemplateDelayCloseTopic = "Coupra-merchant-admin-service_coupon-template-delay_topic${unique-name:}";
+
+        // 通过 Spring 上下文解析占位符，也就是把咱们 VM 参数里的 unique-name 替换到字符串中
+        couponTemplateDelayCloseTopic = configurableEnvironment.resolvePlaceholders(couponTemplateDelayCloseTopic);
+
+        // 定义消息体
+        JSONObject messageBody = new JSONObject();
+        messageBody.put("couponTemplateId", couponTemplateDO.getId());
+        messageBody.put("shopNumber", UserContext.getShopNumber());
+
+        // 设置消息的送达时间，毫秒级 Unix 时间戳
+        Long deliverTimeStamp = couponTemplateDO.getValidEndTime().getTime();
+
+        // 构建消息体
+        String messageKeys = UUID.randomUUID().toString();
+        Message<JSONObject> message = MessageBuilder
+                .withPayload(messageBody)
+                .setHeader(MessageConst.PROPERTY_KEYS, messageKeys)
+                .build();
+        // 执行 RocketMQ5.x 消息队列发送&异常处理逻辑
+        SendResult sendResult;
+        try {
+            sendResult = rocketMQTemplate.
+                    syncSendDeliverTimeMills(couponTemplateDelayCloseTopic, message, deliverTimeStamp);
+            log.info("[生产者] 优惠券模板延时关闭 - 发送结果：{}，消息ID：{}，消息Keys：{}", sendResult.getSendStatus(), sendResult.getMsgId(), messageKeys);
+        }catch (Exception ex){
+            log.error("[生产者] 优惠券模板延时关闭 - 消息发送失败，消息体：{}", couponTemplateDO.getId(), ex);
+        }
+
 
     }
 
