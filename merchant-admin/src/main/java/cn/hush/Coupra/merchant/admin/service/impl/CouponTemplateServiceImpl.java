@@ -141,7 +141,7 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
 
         // 使用 RocketMQ5.x 发送任意时间延时消息
         // 定义 Topic
-        String couponTemplateDelayCloseTopic = "Coupra-merchant-admin-service_coupon-template-delay_topic${unique-name:}";
+        String couponTemplateDelayCloseTopic = "Coupra_merchant-admin-service_coupon-template-delay_topic${unique-name:}";
 
         // 通过 Spring 上下文解析占位符，也就是把咱们 VM 参数里的 unique-name 替换到字符串中
         couponTemplateDelayCloseTopic = configurableEnvironment.resolvePlaceholders(couponTemplateDelayCloseTopic);

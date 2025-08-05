@@ -4,12 +4,8 @@ package cn.hush.Coupra.merchant.admin.mq.consumer;
 
 import cn.hush.Coupra.merchant.admin.common.enums.CouponTemplateStatusEnum;
 import cn.hush.Coupra.merchant.admin.dao.entity.CouponTemplateDO;
-import cn.hush.Coupra.merchant.admin.service.CouponTemplateService;
 import com.alibaba.fastjson2.JSONObject;
-import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.update.UpdateChain;
-import com.mybatisflex.core.update.UpdateWrapper;
-import io.micrometer.core.instrument.binder.logging.LogbackMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -31,8 +27,6 @@ import org.springframework.stereotype.Component;
 @Slf4j(topic = "CouponTemplateDelayExecuteStatusConsumer")
 public class CouponTemplateDelayExecuteStatusConsumer implements RocketMQListener<JSONObject> {
 
-    private final CouponTemplateService couponTemplateService;
-    private final LogbackMetrics logbackMetrics;
 
     @Override
     public void onMessage(JSONObject message) {
