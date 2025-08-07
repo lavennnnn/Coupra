@@ -4,6 +4,8 @@ package cn.hush.Coupra.merchant.admin.mq.consumer;
 
 import cn.hush.Coupra.merchant.admin.common.enums.CouponTemplateStatusEnum;
 import cn.hush.Coupra.merchant.admin.dao.entity.CouponTemplateDO;
+import cn.hush.Coupra.merchant.admin.mq.base.MessageWrapper;
+import cn.hush.Coupra.merchant.admin.service.CouponTemplateService;
 import com.alibaba.fastjson2.JSONObject;
 import com.mybatisflex.core.update.UpdateChain;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +27,9 @@ import org.springframework.stereotype.Component;
         consumerGroup = "Coupra_merchant-admin-service_coupon-template-delay-status_cg${unique-name:}"
 )
 @Slf4j(topic = "CouponTemplateDelayExecuteStatusConsumer")
-public class CouponTemplateDelayExecuteStatusConsumer implements RocketMQListener<JSONObject> {
+public class CouponTemplateDelayExecuteStatusConsumer implements RocketMQListener<MessageWrapper<CouponTemplateDelayEvent>> {
 
+    private final CouponTemplateService couponTemplateService;
 
     @Override
     public void onMessage(JSONObject message) {
