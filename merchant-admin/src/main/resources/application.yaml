@@ -45,3 +45,13 @@ rocketmq:
     retry-times-when-send-failed: 1 # 同步发送重试次数
     retry-times-when-send-async-failed: 1 # 异步发送重试次数
 
+xxl-job:
+  enabled: false
+  access-token: default_token
+  admin:
+    addresses: http://localhost:8088/xxl-job-admin
+  executor:
+    application-name: Coupra-merchant-admin
+    ip: 127.0.0.1
+    log-retention-days: 30
+    port: 19999
