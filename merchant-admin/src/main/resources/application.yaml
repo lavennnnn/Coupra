@@ -51,7 +51,7 @@ xxl-job:
   admin:
     addresses: http://localhost:8088/xxl-job-admin
   executor:
-    application-name: Coupra-merchant-admin
+    application-name: coupra
     ip: 127.0.0.1
     log-retention-days: 30
     port: 19999

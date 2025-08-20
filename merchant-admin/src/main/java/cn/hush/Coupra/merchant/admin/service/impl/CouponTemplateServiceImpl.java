@@ -173,7 +173,12 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
 
     @Override
     public CouponTemplateQueryRespDTO findCouponTemplateById(String couponTemplateId) {
-        return null;
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .eq(CouponTemplateDO::getShopNumber, UserContext.getShopNumber())
+                .eq(CouponTemplateDO::getId, couponTemplateId);
+
+        CouponTemplateDO couponTemplateDO = couponTemplateMapper.selectOneByQuery(queryWrapper);
+        return BeanUtil.toBean(couponTemplateDO, CouponTemplateQueryRespDTO.class);
     }
 
     @LogRecord(
