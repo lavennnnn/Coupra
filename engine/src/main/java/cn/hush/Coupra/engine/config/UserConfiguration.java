@@ -1,8 +1,9 @@
-package cn.hush.Coupra.merchant.admin.config;
+package cn.hush.Coupra.engine.config;
 
 
-import cn.hush.Coupra.merchant.admin.common.context.UserContext;
-import cn.hush.Coupra.merchant.admin.common.context.UserInfoDTO;
+
+import cn.hush.Coupra.engine.common.context.UserContext;
+import cn.hush.Coupra.engine.common.context.UserInfoDTO;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,10 +17,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @program: Coupra
  * @description: 用户相关配置类
  * @author: Hush
- * @create: 2025-07-17 01:14
+ * @create: 2025-08-21 01:38
  **/
 @Configuration
-public class UserConfiguration implements WebMvcConfigurer {
+public class UserConfiguration implements WebMvcConfigurer{
 
     /**
      * 用户信息传输拦截器
@@ -38,10 +39,6 @@ public class UserConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/**");
     }
 
-    /**
-     * 用户信息传输拦截器
-     * <p>
-     */
     static class UserTransmitInterceptor implements HandlerInterceptor {
 
         @Override
@@ -57,5 +54,6 @@ public class UserConfiguration implements WebMvcConfigurer {
             UserContext.removeUser();
         }
     }
+
 
 }

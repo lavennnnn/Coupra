@@ -13,9 +13,6 @@ spring:
       port: 6379
       database: 1
 
-#mybatis-plus:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 springdoc:
   default-flat-param-object: true

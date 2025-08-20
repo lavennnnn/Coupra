@@ -197,7 +197,7 @@
 <!--                <configuration>
                     <java>
                         &lt;!&ndash;<eclipse>
-                            <file>${maven.multiModuleProjectDirectory}/format/one-coupon_spotless_formatter.xml</file>
+                            <file>${maven.multiModuleProjectDirectory}/format/Coupra_spotless_formatter.xml</file>
                         </eclipse>&ndash;&gt;
 &lt;!&ndash;                        <licenseHeader>
                             &lt;!&ndash; ${maven.multiModuleProjectDirectory} 爆红属于正常，并不影响编译或者运行，忽略就好 &ndash;&gt;

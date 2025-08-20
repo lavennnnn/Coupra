@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @program: Coupra
- * @description: 数据库持久层配置类｜配置 MyBatis-Plus 相关分页插件等
+ * @description: 数据库持久层配置类
  * @author: Hush
  * @create: 2025-07-17 01:02
  **/

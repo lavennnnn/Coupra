@@ -33,7 +33,7 @@ public class CouponTemplateDelayExecuteStatusProducer extends AbstractCommonSend
         return BaseSendExtendDTO.builder()
                 .eventName("优惠券模板关闭定时执行")
                 .keys(String.valueOf(messageSendEvent.getCouponTemplateId()))
-                .topic(environment.resolvePlaceholders("one-coupon_merchant-admin-service_coupon-template-delay_topic${unique-name:}"))
+                .topic(environment.resolvePlaceholders("Coupra_merchant-admin-service_coupon-template-delay_topic${unique-name:}"))
                 .delayTime(messageSendEvent.getDelayTime())
                 .build();
     }
