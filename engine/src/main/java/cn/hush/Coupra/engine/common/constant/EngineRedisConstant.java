@@ -20,5 +20,10 @@ public final class EngineRedisConstant {
      */
     public static final String LOCK_COUPON_TEMPLATE_KEY = "Coupra_engine:lock:template:%s";
 
+    /**
+     * 优惠券模板缓存空值 Key
+     */
+    public static final String COUPON_TEMPLATE_IS_NULL_KEY = "Coupra_engine:template_is_null:%s";
+
 
 }
