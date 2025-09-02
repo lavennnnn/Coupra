@@ -1,4 +1,4 @@
-package cn.hush.Coupra.merchant.admin.mq.base;
+package cn.hush.Coupra.distribution.mq.base;
 
 import lombok.*;
 

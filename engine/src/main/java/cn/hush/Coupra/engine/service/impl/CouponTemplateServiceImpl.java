@@ -3,7 +3,7 @@ package cn.hush.Coupra.engine.service.impl;
 
 import cn.hush.Coupra.engine.common.constant.EngineRedisConstant;
 import cn.hush.Coupra.engine.common.enums.CouponTemplateStatusEnum;
-import cn.hush.Coupra.engine.dao.CouponTemplateDO;
+import cn.hush.Coupra.engine.dao.entity.CouponTemplateDO;
 import cn.hush.Coupra.engine.dao.mapper.CouponTemplateMapper;
 import cn.hush.Coupra.engine.dto.req.CouponTemplateQueryReqDTO;
 import cn.hush.Coupra.engine.dto.resp.CouponTemplateQueryRespDTO;

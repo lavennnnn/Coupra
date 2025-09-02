@@ -1,7 +1,7 @@
 package cn.hush.Coupra.engine.service;
 
 
-import cn.hush.Coupra.engine.dao.CouponTemplateDO;
+import cn.hush.Coupra.engine.dao.entity.CouponTemplateDO;
 import cn.hush.Coupra.engine.dto.req.CouponTemplateQueryReqDTO;
 import cn.hush.Coupra.engine.dto.resp.CouponTemplateQueryRespDTO;
 import com.mybatisflex.core.service.IService;

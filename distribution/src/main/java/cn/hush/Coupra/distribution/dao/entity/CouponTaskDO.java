@@ -1,4 +1,4 @@
-package cn.hush.Coupra.engine.dao;
+package cn.hush.Coupra.distribution.dao.entity;
 
 
 import com.mybatisflex.annotation.Column;
@@ -14,16 +14,16 @@ import java.util.Date;
 
 /**
  * @program: Coupra
- * @description: 优惠券模板数据库持久层实体
+ * @description: 优惠券推送任务数据库持久层实体
  * @author: Hush
- * @create: 2025-08-21 01:41
+ * @create: 2025-08-27 22:37
  **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table("t_coupon_template")
-public class CouponTemplateDO {
+@Table("t_coupon_task")
+public class CouponTaskDO {
 
     /**
      * id
@@ -37,59 +37,64 @@ public class CouponTemplateDO {
     private Long shopNumber;
 
     /**
-     * 优惠券名称
+     * 批次id
      */
-    private String name;
+    private Long batchId;
 
     /**
-     * 优惠券来源 0：店铺券 1：平台券
+     * 优惠券批次任务名称
      */
-    private Integer source;
+    private String taskName;
 
     /**
-     * 优惠对象 0：商品专属 1：全店通用
+     * 文件地址
      */
-    private Integer target;
+    private String fileAddress;
 
     /**
-     * 优惠商品编码
+     * 发放失败用户文件地址
      */
-    private String goods;
+    private String failFileAddress;
 
     /**
-     * 优惠类型 0：立减券 1：满减券 2：折扣券
+     * 发放优惠券数量
      */
-    private Integer type;
+    private Integer sendNum;
 
     /**
-     * 有效期开始时间
+     * 通知方式，可组合使用 0：站内信 1：弹框推送 2：邮箱 3：短信
      */
-    private Date validStartTime;
+    private String notifyType;
 
     /**
-     * 有效期结束时间
+     * 优惠券模板id
      */
-    private Date validEndTime;
+    private Long couponTemplateId;
 
     /**
-     * 库存
+     * 发送类型 0：立即发送 1：定时发送
      */
-    private Integer stock;
+    private Integer sendType;
 
     /**
-     * 领取规则
+     * 发送时间
      */
-    private String receiveRule;
+    private Date sendTime;
 
     /**
-     * 消耗规则
-     */
-    private String consumeRule;
-
-    /**
-     * 优惠券状态 0：生效中 1：已结束
+     * 状态 0：待执行 1：执行中 2：执行失败 3：执行成功 4：取消
      */
     private Integer status;
+
+    /**
+     * 完成时间
+     */
+    private Date completionTime;
+
+    /**
+     * 操作人
+     */
+    private Long operatorId;
 
     /**
      * 创建时间
