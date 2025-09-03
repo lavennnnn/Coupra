@@ -1,6 +1,7 @@
 package cn.hush.Coupra.distribution.service.handler.excel;
 
 
+import cn.hush.Coupra.distribution.common.constant.DistributionRedisConstant;
 import cn.hush.Coupra.distribution.common.constant.EngineRedisConstant;
 import cn.hush.Coupra.distribution.common.enums.CouponSourceEnum;
 import cn.hush.Coupra.distribution.common.enums.CouponStatusEnum;
@@ -32,18 +33,24 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class ReadExcelDistributionListener extends AnalysisEventListener<CouponTaskExcelObject> {
 
-    private final Long couponTaskId;
+    private final CouponTaskDO couponTaskDO;
     private final CouponTemplateDO couponTemplateDO;
+    private final CouponTaskFailMapper couponTaskFailMapper;
+
     private final StringRedisTemplate stringRedisTemplate;
-    private final CouponTemplateMapper couponTemplateMapper;
-    private final UserCouponMapper userCouponMapper;
-    private final CouponTaskMapper couponTaskMapper;
+    private final CouponExecuteDistributionProducer couponExecuteDistributionProducer;
+
+    private int rowCount = 1;
+    private final static String STOCK_DECREMENT_AND_BATCH_SAVE_USER_RECORD_LUA_PATH = "lua/stock_decrement_and_batch_save_user_record.lua";
+    private final static int BATCH_USER_COUPON_SIZE = 5000;
 
 
     @Override
     public void invoke(CouponTaskExcelObject data, AnalysisContext context) {
-        // 通过缓存判断优惠券模板记录库存是否充足
-        String couponTemplateKey = String.format(EngineRedisConstant.COUPON_TEMPLATE_KEY, couponTemplateDO.getId());
+        Long couponTaskId = couponTaskDO.getId();
+
+        // 获取当前进度，判断是否已经执行过。如果已执行，则跳过即可，防止执行到一半应用宕机
+        String templateTaskExecuteProgressKey = String.format(DistributionRedisConstant.TEMPLATE_TASK_EXECUTE_PROGRESS_KEY, couponTaskId);
         Long stock = stringRedisTemplate.opsForHash().increment(couponTemplateKey, "stock", -1);
         if (stock < 0) {
             // 优惠券模板缓存库存不足扣减失败

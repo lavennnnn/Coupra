@@ -49,6 +49,4 @@ public class XXLJobConfiguration {
         xxlJobSpringExecutor.setLogRetentionDays(logRetentionDays);
         return xxlJobSpringExecutor;
     }
-
-
 }
