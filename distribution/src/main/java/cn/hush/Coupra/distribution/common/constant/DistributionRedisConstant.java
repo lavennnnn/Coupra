@@ -1,5 +1,8 @@
 package cn.hush.Coupra.distribution.common.constant;
 
+/**
+ * 分发优惠券服务 Redis 缓存常量类
+ */
 public final class DistributionRedisConstant {
 
     /**

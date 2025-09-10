@@ -4,11 +4,13 @@ package cn.hush.Coupra.distribution.mq.consumer;
 import cn.hush.Coupra.distribution.common.enums.CouponTaskStatusEnum;
 import cn.hush.Coupra.distribution.common.enums.CouponTemplateStatusEnum;
 import cn.hush.Coupra.distribution.dao.entity.CouponTemplateDO;
+import cn.hush.Coupra.distribution.dao.mapper.CouponTaskFailMapper;
 import cn.hush.Coupra.distribution.dao.mapper.CouponTaskMapper;
 import cn.hush.Coupra.distribution.dao.mapper.CouponTemplateMapper;
 import cn.hush.Coupra.distribution.dao.mapper.UserCouponMapper;
 import cn.hush.Coupra.distribution.mq.base.MessageWrapper;
 import cn.hush.Coupra.distribution.mq.event.CouponTaskExecuteEvent;
+import cn.hush.Coupra.distribution.mq.producer.CouponExecuteDistributionProducer;
 import cn.hush.Coupra.distribution.service.handler.excel.CouponTaskExcelObject;
 import cn.hush.Coupra.distribution.service.handler.excel.ReadExcelDistributionListener;
 import cn.hutool.core.util.ObjectUtil;
@@ -39,12 +41,14 @@ public class CouponTaskExecuteConsumer implements RocketMQListener<MessageWrappe
 
     private final CouponTaskMapper couponTaskMapper;
     private final CouponTemplateMapper couponTemplateMapper;
+    private final CouponTaskFailMapper couponTaskFailMapper;
+
     private final StringRedisTemplate stringRedisTemplate;
-    private final UserCouponMapper userCouponMapper;
+    private final CouponExecuteDistributionProducer couponExecuteDistributionProducer;
+
 
     @Override
     public void onMessage(MessageWrapper<CouponTaskExecuteEvent> messageWrapper) {
-
         // 开头打印日志，平常可 Debug 看任务参数，线上可报平安（比如消息是否消费，重新投递时获取参数等）
         log.info("[消费者] 优惠券推送任务正式执行 - 执行消费逻辑，消息体：{}", JSON.toJSONString(messageWrapper));
 
@@ -69,12 +73,11 @@ public class CouponTaskExecuteConsumer implements RocketMQListener<MessageWrappe
 
         // 正式开始执行优惠券推送任务
         var readExcelDistributionListener = new ReadExcelDistributionListener(
-                couponTaskId,
+                couponTaskDO,
                 couponTemplateDO,
+                couponTaskFailMapper,
                 stringRedisTemplate,
-                couponTemplateMapper,
-                userCouponMapper,
-                couponTaskMapper
+                couponExecuteDistributionProducer
         );
         EasyExcel.read(couponTaskDO.getFileAddress(), CouponTaskExcelObject.class, readExcelDistributionListener).sheet().doRead();
     }
